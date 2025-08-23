@@ -1,0 +1,39 @@
+Users table
+
+
+ CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(255) NOT NULL,
+    customer_type VARCHAR(10) NOT NULL
+);
+
+
+Sellers table
+
+CREATE TABLE Sellers (
+    seller_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    car_company VARCHAR(255) NOT NULL,
+    car_model VARCHAR(255) NOT NULL,
+    make_year YEAR NOT NULL,
+    km_driven INT NOT NULL,
+    ownership_type ENUM('2','3','4') NOT NULL,
+    price INT DEFAULT NULL,
+    approval TINYINT(1) DEFAULT 0,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+
+
+Offers table 
+
+CREATE TABLE Offers (
+    offer_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    seller_id INT NOT NULL,
+    requested_price INT NOT NULL,
+    request_sent TINYINT(1) DEFAULT NULL,
+    CONSTRAINT fk_offer_user FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CONSTRAINT fk_offer_seller FOREIGN KEY (seller_id) REFERENCES Sellers(seller_id)
+);
+
