@@ -5,7 +5,7 @@ import (
 
 	"github.com/beego/beego/v2/client/orm"
 
-	_ "github.com/go-sql-driver/mysql" 
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // InitDB runs once at startup
@@ -28,17 +28,6 @@ func DBconnection() orm.Ormer {
 	return orm.NewOrm()
 }
 
-
-
-func GetSellerByID(o orm.Ormer, sellerID int) (*Sellers, error) {
-	seller := Sellers{SellerID: sellerID} 
-	err := o.Read(&seller)
-	if err != nil {
-		return nil, err
-	}
-	return &seller, nil
-}
-
 func CreateOffer(o orm.Ormer, offer *Offer) error {
 	_, err := o.Insert(offer)
 	return err
@@ -58,25 +47,32 @@ func CreateCar(o orm.Ormer, car *Sellers) error {
 	return err
 }
 
+func GetSellerByID(o orm.Ormer, sellerID, carID int) (*Sellers, error) {
+	sellerCar := Sellers{SellerID: sellerID, CarID: carID}
+	err := o.Read(&sellerCar, "SellerID", "CarID")
+	if err != nil {
+		return nil, err
+	}
+	return &sellerCar, nil
+}
+
 // GetOfferByID fetch offer by offer_id
-func GetOfferByID(o orm.Ormer, offerID int) (*Offer, error) {
-	offer := Offer{OfferID: offerID} // assuming your struct has OfferID as PK
+func GetOfferByID(o orm.Ormer, offerID int,CarID int) (*Offer, error) {
+	offer := Offer{OfferID: offerID, CarID: CarID} // assuming your struct has OfferID as PK
 	if err := o.Read(&offer); err != nil {
 		return nil, err
 	}
 	return &offer, nil
 }
 
-// UpdateSellerApproval updates seller approval status
+func UpdateSellerApproval(o orm.Ormer, sellerID int, carID int, approval bool) error {
 
-func UpdateSellerApproval(o orm.Ormer, sellerID int, approval bool) error {
-	// create a struct with the primary key set
-	seller := Sellers{SellerID: sellerID}
-	if err := o.Read(&seller); err != nil {
-		return err // seller not found
+	seller := Sellers{SellerID: sellerID, CarID: carID}
+	if err := o.Read(&seller, "SellerID", "CarID"); err != nil {
+		return err
 	}
 
 	seller.Approval = approval
-	_, err := o.Update(&seller, "Approval") // update only the Approval field
+	_, err := o.Update(&seller, "Approval")
 	return err
 }

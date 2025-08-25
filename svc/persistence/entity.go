@@ -11,7 +11,8 @@ func (User) TableName() string {
 }
 
 type Sellers struct {
-	SellerID   int    `orm:"column(seller_id);auto;pk"`
+	SellerID   int    `orm:"column(seller_id);index"`
+	CarID      int    `orm:"column(car_id); auto;pk"`
 	UserID     int    `orm:"column(user_id)"`
 	CarCompany string `orm:"column(car_company);size(100)"`
 	CarModel   string `orm:"column(car_model);size(100)"`
@@ -22,7 +23,7 @@ type Sellers struct {
 	Approval   bool   `orm:"column(approval);default(false)"`
 }
 
-func (Sellers) TableName() string {
+func (s *Sellers) TableName() string {
 	return "Sellers"
 }
 
@@ -30,6 +31,7 @@ type Offer struct {
 	OfferID        int `orm:"column(offer_id);auto;pk"`
 	UserID         int `orm:"column(user_id)"`
 	SellerID       int `orm:"column(seller_id)"`
+	CarID          int `orm:"column(car_id)"`
 	RequestedPrice int `orm:"column(requested_price)"`
 	RequestSent    int `orm:"column(request_sent);default(0)"`
 }

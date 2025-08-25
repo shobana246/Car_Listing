@@ -44,6 +44,7 @@ func PostCar(c *gin.Context) {
 
 	// create seller entry
 	car := persistence.Sellers{
+		SellerID:   req.UserID, // keep same as user id
 		UserID:     req.UserID,
 		CarCompany: req.CarCompany,
 		CarModel:   req.CarModel,
@@ -52,8 +53,8 @@ func PostCar(c *gin.Context) {
 		OwnerShip:  req.OwnerShip,
 		Price:      req.Price,
 		Approval:   false, // default not approved
+		// CarID is omitted; auto-incremented by MySQL
 	}
-
 	if err := persistence.CreateCar(db, &car); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -68,6 +69,7 @@ func CarApproval(c *gin.Context) {
 	// Request body
 	var req struct {
 		OfferID int `json:"offer_id"`
+		CarID   int `json:"car_id"`
 	}
 
 	// Bind request
@@ -77,7 +79,7 @@ func CarApproval(c *gin.Context) {
 	}
 
 	// Find the offer
-	offer, err := persistence.GetOfferByID(db, req.OfferID)
+	offer, err := persistence.GetOfferByID(db, req.OfferID, req.CarID)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "Offer not found"})
 		return
@@ -102,7 +104,7 @@ func CarApproval(c *gin.Context) {
 		return
 	}
 
-	if err := persistence.UpdateSellerApproval(db, offer.SellerID, true); err != nil {
+	if err := persistence.UpdateSellerApproval(db, offer.SellerID, offer.CarID, true); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
