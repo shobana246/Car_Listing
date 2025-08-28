@@ -9,5 +9,6 @@ import (
 func UserRoutes(r *gin.Engine) {
 	r.POST("/register", services.Register)
 	r.GET("/car-list", services.CarList)
-	
+	r.GET("/Login", services.Login)
+
 }
