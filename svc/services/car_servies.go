@@ -20,14 +20,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// // Validate customer type
-	// if us.CustomerType != "buyer" && us.CustomerType != "seller" {
-	// 	c.JSON(400, gin.H{
-	// 		"error":    "Invalid customer_type. Allowed values: 'buyer' or 'seller'",
-	// 		"received": us.CustomerType,
-	// 	})
-	// 	return
-	// }
 
 	// 🔍 Check if user already exists (by Email)
 	existingUser := persistence.User{Email: us.Email}
